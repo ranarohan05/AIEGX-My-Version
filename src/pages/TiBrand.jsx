@@ -319,7 +319,7 @@ export default function TiBrand() {
 
                   <img 
                     src={am69Product.image} 
-                    alt={am69Product.name} 
+                    alt={am69Product.name}
                     className="max-h-full max-w-full object-contain transform group-hover/img:scale-105 transition-transform duration-500 drop-shadow-2xl relative z-10"
                     loading="lazy"
                   />
@@ -508,7 +508,7 @@ export default function TiBrand() {
                     <div className="h-44 w-full flex items-center justify-center p-2 pt-6 relative z-10">
                       <img 
                         src={prod.image} 
-                        alt={prod.name} 
+                        alt={prod.name}
                         className="max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-500 drop-shadow-xl"
                         loading="lazy"
                       />

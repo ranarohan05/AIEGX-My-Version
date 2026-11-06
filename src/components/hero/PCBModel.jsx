@@ -271,19 +271,24 @@ class ModelErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#101936]/95 rounded-2xl border border-white/10 text-center p-6 z-10 shadow-lg">
-          <div className="p-3 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 mb-3 shadow-lg shadow-red-500/10">
+        <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-[#101936]/90 text-center p-6 z-10 shadow-lg">
+          <img
+            src="/images/aiegx-hardware-som-hd.jpg"
+            alt="AIEGX embedded hardware platform"
+            className="absolute inset-0 h-full w-full object-contain opacity-25"
+          />
+          <div className="relative z-10 p-3 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 mb-3 shadow-lg shadow-red-500/10">
             <AlertCircle className="w-6 h-6" />
           </div>
-          <h4 className="text-xs font-mono font-bold text-white mb-1 uppercase tracking-wider">
+          <h4 className="relative z-10 text-xs font-mono font-bold text-white mb-1 uppercase tracking-wider">
             3D Hardware Canvas Error
           </h4>
-          <p className="text-[11px] text-white/60 max-w-[220px] mb-4">
+          <p className="relative z-10 text-[11px] text-white/80 max-w-[220px] mb-4">
             Unable to initialize WebGL context or load the PCB 3D model.
           </p>
           <button
             onClick={this.handleRetry}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-mono text-[#42D9F5] bg-[#17264D] border border-white/10 hover:bg-[#17264D]/80 transition-colors"
+            className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-mono text-[#42D9F5] bg-[#17264D] border border-white/10 hover:bg-[#17264D]/80 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#42D9F5]"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Retry Model</span>
@@ -305,6 +310,19 @@ export default function PCBModel() {
   const controlsRef = useRef(null);
   const [defaultPosition, setDefaultPosition] = useState(null);
   const [resetTrigger, setResetTrigger] = useState(0);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => (
+    typeof window !== 'undefined' && window.matchMedia
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false
+  ));
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handleChange = (event) => setPrefersReducedMotion(event.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   const handleDefaultPositionCalculated = useCallback((pos) => {
     setDefaultPosition(pos);
@@ -326,7 +344,7 @@ export default function PCBModel() {
         <Suspense fallback={<ModelLoadingFallback />}>
           <Canvas
             camera={{ position: [2.61, 1.41, 4.18], fov: 38, near: 0.1, far: 100 }}
-            dpr={[1, 2]}
+            dpr={[1, 1.5]}
             gl={{
               antialias: true,
               alpha: true,
@@ -405,8 +423,8 @@ export default function PCBModel() {
             <OrbitControls
               ref={controlsRef}
               makeDefault
-              autoRotate={true}
-              autoRotateSpeed={1.0}
+              autoRotate={!prefersReducedMotion}
+              autoRotateSpeed={0.45}
               enablePan={false}
               enableZoom={true}
               minPolarAngle={0.08}

@@ -22,50 +22,50 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#EDF2F7] dark:bg-[#0D1733] text-[#14213D] dark:text-[#F8FAFC] pt-16 pb-12 relative overflow-hidden transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="site-footer relative overflow-hidden transition-colors duration-300">
+      <div className="site-footer__inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Grid: Branding & Multi-column links */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-12 border-b border-[#DBE4F0] dark:border-[#24355A]">
+        <div className="site-footer__columns grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-12 border-b border-[#DBE4F0] dark:border-[#24355A]">
           
           {/* Brand Info & Newsletter (5 cols on lg) */}
-          <div className="lg:col-span-5 flex flex-col justify-between">
+          <div className="site-footer__brand flex flex-col justify-between">
             <div>
               {/* Logo */}
-              <Logo className="mb-4" imgClassName="w-10 h-10 sm:w-11 sm:h-11" />
+              <Logo className="site-footer__logo mb-4" imgClassName="w-10 h-10 sm:w-11 sm:h-11" />
 
-              <p className="text-sm text-[#52627C] dark:text-[#AAB6D0] leading-relaxed max-w-sm mb-6">
+              <p className="site-footer__description text-sm text-[#52627C] dark:text-[#AAB6D0] leading-relaxed max-w-sm mb-6">
                 Aiegx designs and manufactures ultra-low-power neural silicon, rugged industrial edge hardware, and real-time embedded software for autonomous systems.
               </p>
             </div>
 
             {/* Newsletter Input */}
-            <div>
-              <span className="text-xs font-mono uppercase text-[#089EC2] dark:text-[#2DD4F0] tracking-wider block mb-2 font-semibold">
+            <div className="site-footer__newsletter">
+              <span className="site-footer__newsletter-title text-xs font-mono uppercase text-[#089EC2] dark:text-[#2DD4F0] tracking-wider block mb-2 font-semibold">
                 Subscribe to Silicon Dispatch
               </span>
-              <p className="text-xs text-[#52627C] dark:text-[#AAB6D0] mb-3">
+              <p className="site-footer__newsletter-copy text-xs text-[#52627C] dark:text-[#AAB6D0] mb-3">
                 Monthly technical benchmarks, silicon errata notes, and SDK releases.
               </p>
 
               {subscribed ? (
-                <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">
+                <div className="site-footer__subscribed flex items-center gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   <span>Subscribed! Check your inbox for technical briefings.</span>
                 </div>
               ) : (
-                <form onSubmit={handleSubscribe} className="flex items-center gap-2 max-w-md">
+                <form onSubmit={handleSubscribe} className="site-footer__form flex items-center gap-2 max-w-md">
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="engineer@enterprise.ai"
-                    className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-[#17264A] border border-[#DBE4F0] dark:border-[#24355A] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 text-xs focus:outline-none focus:border-[#089EC2] dark:focus:border-[#2DD4F0]"
+                    className="site-footer__email flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-[#17264A] border border-[#DBE4F0] dark:border-[#24355A] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 text-xs focus:outline-none focus:border-[#089EC2] dark:focus:border-[#2DD4F0]"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2.5 rounded-xl font-semibold text-xs text-[#0D1733] bg-gradient-to-r from-[#2DD4F0] to-[#3285FF] hover:opacity-90 transition-opacity flex items-center gap-1.5 font-mono cursor-pointer"
+                    className="site-footer__submit px-4 py-2.5 rounded-xl font-semibold text-xs text-[#0D1733] bg-gradient-to-r from-[#2DD4F0] to-[#3285FF] hover:opacity-90 transition-opacity flex items-center gap-1.5 font-mono cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span className="hidden sm:inline">Join</span>
@@ -76,11 +76,11 @@ export default function Footer() {
           </div>
 
           {/* Links Column 1: Hardware Platforms (2 cols) */}
-          <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-xs font-mono uppercase tracking-wider text-[#089EC2] dark:text-[#2DD4F0] font-bold">
+          <div className="site-footer__links space-y-3">
+            <h4 className="site-footer__heading text-xs font-mono uppercase tracking-wider text-[#089EC2] dark:text-[#2DD4F0] font-bold">
               Platforms
             </h4>
-            <ul className="space-y-2 text-xs text-[#52627C] dark:text-[#AAB6D0]">
+            <ul className="site-footer__list space-y-2 text-xs text-[#52627C] dark:text-[#AAB6D0]">
               <li><a href="#hardware-platforms" className="hover:text-[#089EC2] dark:hover:text-[#2DD4F0] transition-colors">RZ/G2L MPU Module</a></li>
               <li><a href="#hardware-platforms" className="hover:text-[#089EC2] dark:hover:text-[#2DD4F0] transition-colors">RZ/G2N Embedded SOM</a></li>
               <li><a href="#hardware-platforms" className="hover:text-[#089EC2] dark:hover:text-[#2DD4F0] transition-colors">RZ/V2L Vision AI Board</a></li>
@@ -91,11 +91,11 @@ export default function Footer() {
           </div>
 
           {/* Links Column 2: Solutions (2 cols) */}
-          <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-xs font-mono uppercase tracking-wider text-[#089EC2] dark:text-[#2DD4F0] font-bold">
+          <div className="site-footer__links space-y-3">
+            <h4 className="site-footer__heading text-xs font-mono uppercase tracking-wider text-[#089EC2] dark:text-[#2DD4F0] font-bold">
               Solutions
             </h4>
-            <ul className="space-y-2 text-xs text-[#52627C] dark:text-[#AAB6D0]">
+            <ul className="site-footer__list space-y-2 text-xs text-[#52627C] dark:text-[#AAB6D0]">
               <li><a href="#integrated-solutions" className="hover:text-[#089EC2] dark:hover:text-[#2DD4F0] transition-colors">HMI Display Interface</a></li>
               <li><a href="#integrated-solutions" className="hover:text-[#089EC2] dark:hover:text-[#2DD4F0] transition-colors">DMS In-Cabin Vision</a></li>
               <li><a href="#integrated-solutions" className="hover:text-[#089EC2] dark:hover:text-[#2DD4F0] transition-colors">Vehicle Domain Controller</a></li>
@@ -106,11 +106,11 @@ export default function Footer() {
           </div>
 
           {/* Links Column 3: Engineering & Company (3 cols) */}
-          <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-xs font-mono uppercase tracking-wider text-[#089EC2] dark:text-[#2DD4F0] font-bold">
+          <div className="site-footer__links space-y-3">
+            <h4 className="site-footer__heading text-xs font-mono uppercase tracking-wider text-[#089EC2] dark:text-[#2DD4F0] font-bold">
               Engineering & Company
             </h4>
-            <ul className="space-y-2 text-xs text-[#52627C] dark:text-[#AAB6D0]">
+            <ul className="site-footer__list space-y-2 text-xs text-[#52627C] dark:text-[#AAB6D0]">
               <li><a href="#engineering-capabilities" className="hover:text-[#089EC2] dark:hover:text-[#2DD4F0] transition-colors">Hardware & Carrier Design</a></li>
               <li><a href="#engineering-capabilities" className="hover:text-[#089EC2] dark:hover:text-[#2DD4F0] transition-colors">Linux / Yocto BSP Drivers</a></li>
               <li><a href="#engineering-capabilities" className="hover:text-[#089EC2] dark:hover:text-[#2DD4F0] transition-colors">Camera & ISP Integration</a></li>
@@ -123,9 +123,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom Compliance & Copyright Row */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="site-footer__bottom pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
           
-          <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-white/40">
+          <div className="site-footer__legal flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-white/40">
             <span>&copy; {new Date().getFullYear()} Aiegx Technologies Inc. All rights reserved.</span>
             <span className="hidden sm:inline">&bull;</span>
             <a href="#why-aiegx" className="hover:text-slate-900 dark:hover:text-white transition-colors">Privacy Policy</a>
@@ -136,15 +136,15 @@ export default function Footer() {
           </div>
 
           {/* Certifications and Social Icons */}
-          <div className="flex items-center gap-4">
+          <div className="site-footer__trust flex items-center gap-4">
             {/* Cert Pills */}
-            <div className="flex items-center gap-2 text-[10px] font-mono text-slate-700 dark:text-white/60 border border-[#DBE4F0] dark:border-[#24355A] px-3 py-1 rounded-full bg-white dark:bg-[#17264A] shadow-xs">
+            <div className="site-footer__certification flex items-center gap-2 text-[10px] font-mono text-slate-700 dark:text-white/60 border border-[#DBE4F0] dark:border-[#24355A] px-3 py-1 rounded-full bg-white dark:bg-[#17264A] shadow-xs">
               <ShieldCheck className="w-3.5 h-3.5 text-[#089EC2] dark:text-[#2DD4F0]" />
               <span>ISO 9001 &bull; CE &bull; FCC &bull; RoHS</span>
             </div>
 
             {/* Social Icons */}
-            <div className="flex items-center gap-2 text-slate-500 dark:text-white/60">
+            <div className="site-footer__social flex items-center gap-2 text-slate-500 dark:text-white/60">
               <a 
                 href="https://github.com" 
                 target="_blank" 

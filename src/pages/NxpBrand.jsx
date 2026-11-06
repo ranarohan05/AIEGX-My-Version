@@ -357,8 +357,8 @@ export default function NxpBrand() {
                   aria-label="Play NXP i.MX Computer on Modules overview video"
                 >
                   <img 
-                    src="/images/hero-som-module.jpg" 
-                    alt="NXP i.MX Hardware Architecture Overview Video" 
+                    src="/images/hero-som-module.jpg"
+                    alt="NXP i.MX Hardware Architecture Overview Video"
                     className="w-full h-full object-cover opacity-60 group-hover/video:scale-105 group-hover/video:opacity-75 transition-all duration-500"
                   />
 
@@ -502,7 +502,7 @@ export default function NxpBrand() {
                     <div className="h-48 w-full flex items-center justify-center p-2 relative z-10 pt-6">
                       <img 
                         src={prod.image} 
-                        alt={prod.name} 
+                        alt={prod.name}
                         className="max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-500 drop-shadow-xl"
                         loading="lazy"
                       />
@@ -892,7 +892,7 @@ export default function NxpBrand() {
 
             <div className="aspect-video w-full rounded-2xl overflow-hidden bg-black flex flex-col items-center justify-center relative p-6 border border-white/10">
               <img 
-                src="/images/hero-som-module.jpg" 
+                src="/images/hero-som-module.jpg"
                 alt="Video preview" 
                 className="absolute inset-0 w-full h-full object-cover opacity-30"
               />

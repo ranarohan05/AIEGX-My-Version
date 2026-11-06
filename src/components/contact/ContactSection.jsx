@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { 
   ArrowRight, 
   MessageSquare, 
@@ -17,12 +17,45 @@ import {
 export default function ContactSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const contactTriggerRef = useRef(null);
+  const contactDialogRef = useRef(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     projectType: 'Hardware Design (SoM / SBC / Carrier)',
     message: ''
   });
+
+  useEffect(() => {
+    if (!isModalOpen) return undefined;
+
+    const dialog = contactDialogRef.current;
+    const trigger = contactTriggerRef.current;
+    const focusable = dialog?.querySelectorAll('button, input, select, textarea, a[href]');
+    const firstFocusable = focusable?.[0];
+    const lastFocusable = focusable?.[focusable.length - 1];
+    firstFocusable?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsModalOpen(false);
+      } else if (event.key === 'Tab' && focusable?.length) {
+        if (event.shiftKey && document.activeElement === firstFocusable) {
+          event.preventDefault();
+          lastFocusable.focus();
+        } else if (!event.shiftKey && document.activeElement === lastFocusable) {
+          event.preventDefault();
+          firstFocusable.focus();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      trigger?.focus();
+    };
+  }, [isModalOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -43,45 +76,35 @@ export default function ContactSection() {
   };
 
   return (
-    <section 
-      id="contact" 
-      className="py-16 sm:py-20 lg:py-24 relative bg-[#F5F8FC] dark:bg-gradient-to-b dark:from-[#0D1733] dark:via-[#101C3D] dark:to-[#0D1733] scroll-mt-20 transition-colors duration-300 overflow-hidden"
-    >
-      {/* Subtle Ambient Background Lighting Glow */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[300px] bg-gradient-to-tr from-[#3285FF]/10 via-[#2DD4F0]/10 to-transparent rounded-full blur-[140px] pointer-events-none -z-10" />
-      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[400px] h-[250px] bg-gradient-to-bl from-[#2DD4F0]/10 via-[#3285FF]/10 to-transparent rounded-full blur-[140px] pointer-events-none -z-10" />
-
-      {/* Main Section Content Wrapper */}
-      <div className="section-container relative">
-        {/* Section Heading Banner */}
-        <div className="section-heading-container relative w-full mb-8 sm:mb-10 px-5 py-4 sm:px-7 sm:py-5 overflow-hidden rounded-2xl border border-[#DCE6F3] dark:border-[#24355A] shadow-[0_8px_24px_rgba(50,133,255,0.12)] dark:shadow-[0_8px_24px_rgba(45,212,240,0.12)]">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0D1733] tracking-tight leading-[1.18]">
-            Let's Build Your <span className="bg-gradient-to-r from-[#2DD4F0] to-[#3285FF] bg-clip-text text-transparent drop-shadow-[0_1px_1px_rgba(13,23,51,0.30)]">Next Product</span>
-          </h2>
+    <section id="contact" className="home-contact">
+      <div className="home-contact__inner container">
+        <div className="home-contact__intro">
+          <p className="home-eyebrow home-contact__eyebrow">LET'S WORK TOGETHER</p>
+          <h2>Let's Build Your <span>Next Product</span></h2>
+          <p>Talk to our engineers about your hardware, software, and system development requirements.</p>
         </div>
-
-        {/* Action Row: Description & Contact Us Button */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#17264A] border border-[#DBE4F0] dark:border-[#24355A] shadow-xs">
-          <p className="text-base sm:text-lg text-[#52627C] dark:text-[#AAB6D0] leading-relaxed max-w-2xl">
-            Talk to our engineers about your hardware, solution, or custom development requirements.
-          </p>
-          <div className="shrink-0 w-full sm:w-auto">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-bold text-sm sm:text-base text-[#0D1733] bg-gradient-to-r from-[#2DD4F0] to-[#3285FF] hover:from-[#4be0f7] hover:to-[#4392ff] shadow-lg shadow-[#3285FF]/25 hover:shadow-[#2DD4F0]/35 transition-all duration-300 transform hover:-translate-y-0.5 group cursor-pointer"
-              aria-label="Contact Us to build your next product"
-            >
-              <span>Contact Us</span>
-              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform" />
-            </button>
-          </div>
-        </div>
+        <button
+          ref={contactTriggerRef}
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="home-button home-contact__button"
+          aria-label="Contact us to build your next product"
+        >
+          <span>Contact Us</span>
+          <ArrowRight size={17} aria-hidden="true" />
+        </button>
       </div>
 
       {/* Interactive Contact & Inquiry Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-lg bg-white dark:bg-[#17264A] border border-[#DBE4F0] dark:border-[#24355A] rounded-3xl p-6 sm:p-8 shadow-2xl relative text-[#14213D] dark:text-[#F8FAFC]">
+          <div
+            ref={contactDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="contact-dialog-title"
+            className="home-contact__dialog w-full max-w-lg bg-[var(--surface-bg)] border border-[var(--border-color)] rounded-3xl p-6 sm:p-8 shadow-2xl relative text-[var(--text-primary)]"
+          >
             
             {/* Close Button */}
             <button
@@ -94,55 +117,58 @@ export default function ContactSection() {
 
             {!formSubmitted ? (
               <>
-                <div className="flex items-center gap-2 text-xs font-mono text-[#089EC2] dark:text-[#2DD4F0] mb-2 uppercase font-semibold">
+                <div className="flex items-center gap-2 text-xs font-mono text-[var(--accent-color)] mb-2 uppercase font-semibold">
                   <MessageSquare className="w-4 h-4" />
                   <span>Engineering Inquiry</span>
                 </div>
 
-                <h3 className="text-2xl font-bold tracking-tight mb-2 text-[#14213D] dark:text-[#F8FAFC]">
+                <h3 id="contact-dialog-title" className="text-2xl font-bold tracking-tight mb-2 text-[var(--text-primary)]">
                   Speak with Our Engineering Team
                 </h3>
-                <p className="text-xs text-[#52627C] dark:text-[#AAB6D0] mb-6">
+                <p className="text-xs text-[var(--text-secondary)] mb-6">
                   Share your hardware, BSP, camera pipeline, or edge AI specifications with our technical team.
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-white/80 mb-1">
-                      Full Name
+                    <label htmlFor="contact-name" className="block text-xs font-semibold text-slate-700 dark:text-white/80 mb-1">
+                      <span>Full Name</span>
                     </label>
                     <input
+                      id="contact-name"
                       type="text"
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Alex Vance"
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#EDF2F7] dark:bg-[#101936] border border-[#DBE4F0] dark:border-[#24355A] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 text-xs focus:outline-none focus:border-[#089EC2] dark:focus:border-[#2DD4F0]"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] text-xs focus:outline-none focus:border-[var(--accent-color)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-white/80 mb-1">
-                      Work Email
+                    <label htmlFor="contact-email" className="block text-xs font-semibold text-slate-700 dark:text-white/80 mb-1">
+                      <span>Work Email</span>
                     </label>
                     <input
+                      id="contact-email"
                       type="email"
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="alex.vance@company.com"
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#EDF2F7] dark:bg-[#101936] border border-[#DBE4F0] dark:border-[#24355A] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 text-xs focus:outline-none focus:border-[#089EC2] dark:focus:border-[#2DD4F0]"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] text-xs focus:outline-none focus:border-[var(--accent-color)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-white/80 mb-1">
-                      Project Requirement
+                    <label htmlFor="contact-project-type" className="block text-xs font-semibold text-slate-700 dark:text-white/80 mb-1">
+                      <span>Project Requirement</span>
                     </label>
                     <select
+                      id="contact-project-type"
                       value={formData.projectType}
                       onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#EDF2F7] dark:bg-[#101936] border border-[#DBE4F0] dark:border-[#24355A] text-slate-900 dark:text-white text-xs focus:outline-none focus:border-[#089EC2] dark:focus:border-[#2DD4F0]"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] text-xs focus:outline-none focus:border-[var(--accent-color)]"
                     >
                       <option value="Hardware Design (SoM / SBC / Carrier)">Hardware Design (SoM / SBC / Carrier)</option>
                       <option value="Linux / Yocto BSP & Driver Development">Linux / Yocto BSP & Driver Development</option>
@@ -153,21 +179,22 @@ export default function ContactSection() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-white/80 mb-1">
+                    <label htmlFor="contact-message" className="block text-xs font-semibold text-slate-700 dark:text-white/80 mb-1">
                       Project Details & Requirements (Optional)
                     </label>
                     <textarea
+                      id="contact-message"
                       rows="3"
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="Briefly describe your hardware architecture, target timeline, or interfaces required..."
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#EDF2F7] dark:bg-[#101936] border border-[#DBE4F0] dark:border-[#24355A] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 text-xs focus:outline-none focus:border-[#089EC2] dark:focus:border-[#2DD4F0]"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] text-xs focus:outline-none focus:border-[var(--accent-color)]"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full py-3 rounded-xl font-bold text-xs text-[#0D1733] bg-gradient-to-r from-[#2DD4F0] to-[#3285FF] hover:opacity-95 shadow-md shadow-[#2DD4F0]/25 transition-all font-mono flex items-center justify-center gap-2 cursor-pointer"
+                    className="home-contact__submit w-full py-3 rounded-xl font-bold text-xs shadow-md transition-all font-mono flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Submit Technical Inquiry</span>
@@ -179,7 +206,7 @@ export default function ContactSection() {
                 <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center justify-center mx-auto mb-4">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold tracking-tight mb-2">
+                <h3 id="contact-dialog-title" className="text-xl font-bold tracking-tight mb-2">
                   Inquiry Received
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-white/70 max-w-sm mx-auto mb-6">

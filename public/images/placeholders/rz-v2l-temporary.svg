@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title description">
+  <title id="title">Temporary RZ/V2L hardware illustration</title>
+  <desc id="description">An illustrative vision-compute board graphic, not a verified RZ/V2L product photograph.</desc>
+  <defs>
+    <linearGradient id="board" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#315749"/>
+      <stop offset="1" stop-color="#1b3935"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#e7c77f"/>
+      <stop offset="1" stop-color="#b27c3e"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="560" fill="#eef3f6"/>
+  <path d="M0 432h960" stroke="#d7e1e8"/>
+  <text x="42" y="52" fill="#087f98" font-family="Arial,sans-serif" font-size="17" font-weight="700" letter-spacing="3">TEMPORARY ILLUSTRATION</text>
+  <text x="42" y="79" fill="#52627c" font-family="Arial,sans-serif" font-size="13" letter-spacing="1.4">NOT A VERIFIED PRODUCT PHOTO</text>
+  <g transform="translate(182 122)">
+    <rect x="5" y="10" width="598" height="290" rx="13" fill="#203c35" opacity=".14"/>
+    <rect width="598" height="282" rx="13" fill="url(#board)" stroke="#91b9a2" stroke-width="3"/>
+    <circle cx="25" cy="25" r="12" fill="#eef3f6" stroke="url(#metal)" stroke-width="8"/>
+    <circle cx="573" cy="25" r="12" fill="#eef3f6" stroke="url(#metal)" stroke-width="8"/>
+    <circle cx="25" cy="257" r="12" fill="#eef3f6" stroke="url(#metal)" stroke-width="8"/>
+    <circle cx="573" cy="257" r="12" fill="#eef3f6" stroke="url(#metal)" stroke-width="8"/>
+    <rect x="203" y="60" width="180" height="135" rx="8" fill="#26353b" stroke="#afc0b4" stroke-width="4"/>
+    <rect x="217" y="74" width="152" height="107" rx="4" fill="#354a48"/>
+    <path d="M231 90h124m-124 15h124m-124 15h124m-124 15h124m-124 15h124" stroke="#52666a" stroke-width="2"/>
+    <rect x="56" y="58" width="98" height="68" rx="6" fill="#172c2d" stroke="#8da99e" stroke-width="3"/>
+    <rect x="444" y="58" width="98" height="68" rx="6" fill="#172c2d" stroke="#8da99e" stroke-width="3"/>
+    <rect x="67" y="159" width="91" height="59" rx="5" fill="#1e3030" stroke="#829b91" stroke-width="3"/>
+    <rect x="440" y="159" width="91" height="59" rx="5" fill="#1e3030" stroke="#829b91" stroke-width="3"/>
+    <path d="M171 72h21m191 0h42M171 184h21m191 0h42" stroke="#a8c5b3" stroke-width="4"/>
+    <path d="M58 232h480" stroke="#a8c5b3" stroke-width="4" stroke-dasharray="3 10"/>
+    <path d="M70 282v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27m18-27v27" stroke="url(#metal)" stroke-width="7"/>
+    <path d="M299 195v24m-120 0h240" stroke="#53cbd4" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+  </g>
+  <text x="480" y="482" text-anchor="middle" fill="#18263d" font-family="Arial,sans-serif" font-size="31" font-weight="700" letter-spacing="1">RZ/V2L</text>
+  <text x="480" y="510" text-anchor="middle" fill="#52627c" font-family="Arial,sans-serif" font-size="14" letter-spacing="1">ILLUSTRATIVE PLACEHOLDER - PRODUCT IMAGE PENDING</text>
+</svg>

@@ -25,11 +25,11 @@ export default function Logo({
     <a 
       href={href} 
       onClick={handleClick}
-      className={`inline-flex items-center gap-3 sm:gap-3.5 lg:gap-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2DD4F0] rounded-2xl p-0.5 ${className}`}
+      className={`inline-flex items-center gap-3 sm:gap-3.5 lg:gap-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)] rounded-2xl p-0.5 ${className}`}
       aria-label="AIEGX Homepage"
     >
       {/* Official AIEGX Logo Mark: 64-72px on desktop, cleanly contained */}
-      <div className="relative rounded-2xl overflow-hidden shadow-md shadow-[#3285FF]/20 group-hover:shadow-[#2DD4F0]/40 transition-all duration-300 transform group-hover:scale-105 flex-shrink-0 border border-white/10">
+      <div className="relative rounded-2xl overflow-hidden shadow-sm transition-all duration-300 transform group-hover:scale-105 flex-shrink-0 border border-white/10">
         <img 
           src="/images/aiegx-logo-official.png" 
           alt="AIEGX Logo" 
@@ -44,7 +44,7 @@ export default function Logo({
             AIEGX
           </span>
           {showTagline && (
-            <span className="text-[13px] font-mono tracking-wider sm:tracking-widest text-[#64748B] dark:text-[#AAB6D0] uppercase font-semibold mt-1 sm:mt-1.5 leading-none select-none">
+            <span className="site-header__tagline text-[13px] font-mono tracking-wider sm:tracking-widest text-[#64748B] dark:text-[#AAB6D0] uppercase font-semibold mt-1 sm:mt-1.5 leading-none select-none">
               {tagline}
             </span>
           )}

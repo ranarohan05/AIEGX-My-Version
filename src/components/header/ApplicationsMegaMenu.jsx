@@ -476,11 +476,11 @@ export default function ApplicationsMegaMenu({ isOpen, onClose }) {
       <div 
         ref={menuRef}
         id="applications-mega-menu"
-        className="fixed top-[68px] sm:top-[74px] left-0 right-0 z-50 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-auto"
+        className="mega-menu-panel fixed left-0 right-0 z-50 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-auto"
         role="dialog"
         aria-label="Applications Mega Menu"
       >
-        <div className="bg-white/95 dark:bg-[#101936]/98 backdrop-blur-2xl border border-[#DCE6F3] dark:border-white/10 rounded-2xl shadow-2xl shadow-slate-900/10 dark:shadow-black/80 overflow-hidden text-slate-900 dark:text-white flex flex-col h-[min(590px,calc(100vh-88px))]">
+        <div className="bg-white/95 dark:bg-[#101936]/98 backdrop-blur-2xl border border-[#DCE6F3] dark:border-white/10 rounded-2xl shadow-2xl shadow-slate-900/10 dark:shadow-black/80 overflow-hidden text-slate-900 dark:text-white flex flex-col h-[min(590px,calc(100vh-var(--mega-menu-top)-12px))]">
           
           {/* Mobile Drill-Down Bar (Shown on small screens) */}
           <div className="lg:hidden flex items-center justify-between p-3.5 bg-[#F1F6FC] dark:bg-[#0b1226] border-b border-[#DCE6F3] dark:border-white/10">
@@ -558,15 +558,15 @@ export default function ApplicationsMegaMenu({ isOpen, onClose }) {
                         setSelectedCategory(cat.id);
                         setMobileStep(2);
                       }}
-                      className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs sm:text-[13px] font-medium transition-all duration-150 flex items-center justify-between group focus:outline-none focus:ring-1 focus:ring-[#0284C7] dark:focus:ring-[#42D9F5] ${
+                      className={`mega-menu-selectable-item w-full text-left px-3.5 py-2.5 rounded-xl text-xs sm:text-[13px] font-medium transition-all duration-150 flex items-center justify-between group focus:outline-none ${
                         isSelected 
-                          ? 'bg-blue-50 text-[#0284C7] border-l-4 border-[#0284C7] dark:bg-[#17264D] dark:text-[#42D9F5] dark:border-[#42D9F5] font-semibold shadow-xs' 
+                          ? 'mega-menu-item--selected mega-menu-item--selected-primary' 
                           : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/50 dark:text-white/80 dark:hover:text-white dark:hover:bg-white/5'
                       }`}
                     >
                       <span className="truncate pr-2">{cat.name}</span>
                       <ChevronRight className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${
-                        isSelected ? 'text-[#0284C7] dark:text-[#42D9F5] translate-x-0.5' : 'text-slate-400 group-hover:text-slate-600 dark:text-white/30 dark:group-hover:text-white/60'
+                        isSelected ? 'translate-x-0.5' : 'text-slate-400 group-hover:text-slate-600 dark:text-white/30 dark:group-hover:text-white/60'
                       }`} />
                     </button>
                   );

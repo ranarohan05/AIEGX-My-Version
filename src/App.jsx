@@ -5,6 +5,8 @@ import QualcommBrand from './pages/QualcommBrand';
 import NxpBrand from './pages/NxpBrand';
 import TiBrand from './pages/TiBrand';
 import Type1Product from './pages/Type1Product';
+import HardwarePlatformPage from './pages/HardwarePlatformPage';
+import { getHardwarePage } from './components/products/hardwarePlatforms';
 import Footer from './components/common/Footer';
 import ThemeToggle from './components/common/ThemeToggle';
 
@@ -44,8 +46,10 @@ export default function App() {
   const isQualcommPage = cleanPath === '/brands/qualcomm';
   const isNxpPage = cleanPath === '/brands/nxp' || cleanPath === '/brands/nxp-imx';
   const isTiPage = cleanPath === '/brands/ti' || cleanPath === '/brands/ti-am6x';
+  const hardwarePage = getHardwarePage(cleanPath);
 
   const renderContent = () => {
+    if (hardwarePage) return <HardwarePlatformPage page={hardwarePage} />;
     if (isType1Page) return <Type1Product />;
     if (isQualcommPage) return <QualcommBrand />;
     if (isNxpPage) return <NxpBrand />;
@@ -54,13 +58,13 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F8FD] dark:bg-[#0D1733] text-[#0F172A] dark:text-[#F8FAFC] flex flex-col justify-between transition-colors duration-300">
+    <div className="app-shell min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] flex flex-col justify-between transition-colors duration-300">
       <Header />
+      <ThemeToggle />
       <main className="flex-1">
         {renderContent()}
       </main>
       <Footer />
-      <ThemeToggle />
     </div>
   );
 }

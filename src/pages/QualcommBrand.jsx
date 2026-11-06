@@ -235,8 +235,8 @@ export default function QualcommBrand() {
                   <div className="absolute inset-0 bg-gradient-to-tr from-[#3478F6]/10 via-[#42D9F5]/5 to-transparent pointer-events-none" />
                   
                   <img 
-                    src="/images/pcb-modules-transparent.png" 
-                    alt="Aiegx Dragonwing IQ-8275 Computer on Module" 
+                    src="/images/pcb-modules-transparent.png"
+                    alt="Aiegx Dragonwing IQ-8275 Computer on Module"
                     className="max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-500 relative z-10 drop-shadow-2xl"
                     loading="lazy"
                   />

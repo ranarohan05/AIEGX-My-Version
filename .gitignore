@@ -32,6 +32,10 @@ dist-ssr/
 *.sw?
 
 # Temporary / Scratch Files
-*.tmp
+.tmp-chrome-preview-profile/
+.tmp-hero-chrome/
+.tmp-spinboard-chrome/
+.tsupgrader/
+tmp-solutions-preview.png
 *.temp
 WhatsApp Image*.jpeg

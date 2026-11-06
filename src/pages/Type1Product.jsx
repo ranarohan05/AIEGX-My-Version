@@ -360,8 +360,8 @@ export default function Type1Product() {
                   {/* Primary High-Resolution Hardware Image */}
                   <div className="w-full h-64 sm:h-72 flex items-center justify-center relative p-2 overflow-hidden">
                     <img 
-                      src="/images/hero-som-module.jpg" 
-                      alt="TI AM69 / TDA4 Aquila Computer on Module" 
+                      src="/images/hero-som-module.jpg"
+                      alt="TI AM69 / TDA4 Aquila Computer on Module"
                       className="max-h-full max-w-full object-contain drop-shadow-2xl transform group-hover:scale-105 transition-transform duration-700 rounded-xl"
                       loading="eager"
                     />

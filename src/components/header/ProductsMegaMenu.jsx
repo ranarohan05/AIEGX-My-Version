@@ -430,11 +430,11 @@ export default function ProductsMegaMenu({ isOpen, onClose }) {
       <div 
         ref={menuRef}
         id="products-mega-menu"
-        className="fixed top-[68px] sm:top-[74px] left-0 right-0 z-50 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-auto"
+        className="mega-menu-panel fixed left-0 right-0 z-50 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-auto"
         role="dialog"
         aria-label="Products Mega Menu"
       >
-        <div className="bg-white/95 dark:bg-[#101936]/98 backdrop-blur-2xl border border-[#DCE6F3] dark:border-white/10 rounded-2xl shadow-2xl shadow-slate-900/10 dark:shadow-black/80 overflow-hidden text-slate-900 dark:text-white flex flex-col h-[min(590px,calc(100vh-88px))]">
+        <div className="bg-white/95 dark:bg-[#101936]/98 backdrop-blur-2xl border border-[#DCE6F3] dark:border-white/10 rounded-2xl shadow-2xl shadow-slate-900/10 dark:shadow-black/80 overflow-hidden text-slate-900 dark:text-white flex flex-col h-[min(590px,calc(100vh-var(--mega-menu-top)-12px))]">
           
           {/* Mobile Drill-Down Bar (Shown on small screens) */}
           <div className="lg:hidden flex items-center justify-between p-3.5 bg-[#F1F6FC] dark:bg-[#0b1226] border-b border-[#DCE6F3] dark:border-white/10">
@@ -498,18 +498,18 @@ export default function ProductsMegaMenu({ isOpen, onClose }) {
                         setSelectedSubcategory(firstSub);
                         setMobileStep(2);
                       }}
-                      className={`w-full text-left px-4 py-3 rounded-xl text-xs sm:text-sm font-medium flex items-center justify-between focus:outline-none focus-visible:ring-1 focus-visible:ring-[#0284C7] dark:focus-visible:ring-[#42D9F5] ${
+                      className={`mega-menu-selectable-item w-full text-left px-4 py-3 rounded-xl text-xs sm:text-sm font-medium flex items-center justify-between focus:outline-none ${
                         isSelected 
-                          ? 'bg-blue-50 text-[#0284C7] border-l-4 border-[#0284C7] dark:bg-[#17264D] dark:text-[#42D9F5] dark:border-[#42D9F5] font-semibold shadow-xs' 
+                          ? 'mega-menu-item--selected mega-menu-item--selected-primary' 
                           : 'text-slate-700 dark:text-white/80'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <Icon className={`w-4 h-4 ${isSelected ? 'text-[#0284C7] dark:text-[#42D9F5]' : 'text-slate-500 dark:text-white/60'}`} />
+                        <Icon className={`w-4 h-4 ${isSelected ? '' : 'text-slate-500 dark:text-white/60'}`} />
                         <span>{cat.name}</span>
                       </div>
                       <ChevronRight className={`w-3.5 h-3.5 ${
-                        isSelected ? 'text-[#0284C7] dark:text-[#42D9F5] translate-x-0.5' : 'text-slate-400 dark:text-white/30'
+                        isSelected ? 'translate-x-0.5' : 'text-slate-400 dark:text-white/30'
                       }`} />
                     </button>
                   );
@@ -541,15 +541,15 @@ export default function ProductsMegaMenu({ isOpen, onClose }) {
                           setSelectedSubcategory(sub.id);
                           setMobileStep(3);
                         }}
-                        className={`w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium flex items-center justify-between focus:outline-none focus-visible:ring-1 focus-visible:ring-[#0284C7] dark:focus-visible:ring-[#42D9F5] ${
+                        className={`mega-menu-selectable-item w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium flex items-center justify-between focus:outline-none ${
                           isSelected 
-                            ? 'bg-blue-50 text-[#0284C7] border-l-2 border-[#0284C7] dark:bg-[#17264D] dark:text-[#42D9F5] dark:border-none font-semibold shadow-xs' 
+                            ? 'mega-menu-item--selected mega-menu-item--selected-secondary' 
                             : 'text-slate-700 dark:text-white/80'
                         }`}
                       >
                         <span className="truncate pr-1">{sub.name}</span>
                         <ChevronRight className={`w-3 h-3 flex-shrink-0 ${
-                          isSelected ? 'text-[#0284C7] dark:text-[#42D9F5] translate-x-0.5' : 'text-slate-400 dark:text-white/40'
+                          isSelected ? 'translate-x-0.5' : 'text-slate-400 dark:text-white/40'
                         }`} />
                       </button>
                     );
