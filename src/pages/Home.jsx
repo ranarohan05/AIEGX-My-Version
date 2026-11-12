@@ -45,9 +45,9 @@ const heroSlides = [
     target: '#hardware-platforms',
     image: '/images/hero-som-module.jpg',
     fallback: '/images/aiegx-hardware-som-hd.jpg',
-    video1080: '/video/aiegx-hero.mp4',
-    video720: '/video/aiegx-hero.mp4',
-    poster: '/video/aiegx-hero-poster.jpg',
+    video1080: '/video/aiegx-hero-slide-intro-1080p.mp4',
+    video720: '/video/aiegx-hero-slide-intro-720p.mp4',
+    poster: '/video/aiegx-hero-slide-intro-poster.jpg',
   },
   {
     eyebrow: 'INTEGRATED SOLUTIONS',
