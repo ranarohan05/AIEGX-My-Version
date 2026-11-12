@@ -277,7 +277,6 @@ const capabilities = [
 export default function Home() {
   const solutionsFxRootRef = useSolutionsFx(SOLUTIONS_FX);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [heroPaused, setHeroPaused] = useState(false);
   const [transitionFrom, setTransitionFrom] = useState(null);
   const [videoReady, setVideoReady] = useState({});
   const [useMobileVideo, setUseMobileVideo] = useState(false);
@@ -363,7 +362,7 @@ export default function Home() {
         if (activeSlideRef.current === activeSlide) moveSlide(1);
       }, 10000);
     };
-    if (document.hidden || heroPaused) {
+    if (document.hidden) {
       activeVideo.pause();
       return undefined;
     }
@@ -377,7 +376,7 @@ export default function Home() {
       fallbackAdvance();
     }
     return () => window.clearTimeout(fallbackTimer.current);
-  }, [activeSlide, heroPaused, prefersReducedMotion, useMobileVideo]);
+  }, [activeSlide, prefersReducedMotion, useMobileVideo]);
 
   useEffect(() => {
     const onVisibilityChange = () => {
@@ -387,20 +386,20 @@ export default function Home() {
         video.pause();
         window.clearTimeout(fallbackTimer.current);
       }
-      else if (!heroPaused && !prefersReducedMotion) {
+      else if (!prefersReducedMotion) {
         const visibleSlide = activeSlideRef.current;
         Promise.resolve(video.play()).catch(() => {
           setVideoReady((current) => ({ ...current, [visibleSlide]: false }));
           window.clearTimeout(fallbackTimer.current);
           fallbackTimer.current = window.setTimeout(() => {
-            if (activeSlideRef.current === visibleSlide && !document.hidden && !heroPaused) moveSlide(1);
+            if (activeSlideRef.current === visibleSlide && !document.hidden) moveSlide(1);
           }, 10000);
         });
       }
     };
     document.addEventListener('visibilitychange', onVisibilityChange);
     return () => document.removeEventListener('visibilitychange', onVisibilityChange);
-  }, [heroPaused, prefersReducedMotion]);
+  }, [prefersReducedMotion]);
 
   useEffect(() => () => {
     window.clearTimeout(fallbackTimer.current);
@@ -428,15 +427,9 @@ export default function Home() {
         id="home-hero"
         aria-label="AIEGX capabilities"
         aria-roledescription="carousel"
-        onMouseEnter={() => setHeroPaused(true)}
-        onMouseLeave={() => setHeroPaused(false)}
         onKeyDown={(event) => {
           if (event.key === 'ArrowRight') moveSlide(1);
           else if (event.key === 'ArrowLeft') moveSlide(-1);
-        }}
-        onFocusCapture={() => setHeroPaused(true)}
-        onBlurCapture={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) setHeroPaused(false);
         }}
       >
         {visibleVideoSlides.map((index) => {
@@ -472,7 +465,7 @@ export default function Home() {
                     if (index !== activeSlideRef.current || prefersReducedMotion) return;
                     setVideoReady((current) => ({ ...current, [index]: false }));
                     window.clearTimeout(fallbackTimer.current);
-                    if (!heroPaused && !document.hidden) {
+                    if (!document.hidden) {
                       fallbackTimer.current = window.setTimeout(() => {
                         if (activeSlideRef.current === index) moveSlide(1);
                       }, 10000);
