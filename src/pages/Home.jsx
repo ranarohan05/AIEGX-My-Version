@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -27,14 +27,14 @@ import {
   Users,
   Video,
 } from 'lucide-react';
-import { serviceSolutions } from '../components/applications/Applications';
 import ContactSection from '../components/contact/ContactSection';
 import { hardwarePlatforms } from '../components/products/hardwarePlatforms';
 import SpinBoard from '../components/products/SpinBoard';
 import { boardImages } from '../components/products/boardImages';
+import useSolutionsFx from '../hooks/useSolutionsFx';
+import '../styles/solutions-fx.css';
 
-const HERO_VIDEO_SRC = '/video/aiegx-hero.mp4';
-const HERO_VIDEO_POSTER = '/video/aiegx-hero-poster.jpg';
+const SOLUTIONS_FX = true;
 
 const heroSlides = [
   {
@@ -45,6 +45,9 @@ const heroSlides = [
     target: '#hardware-platforms',
     image: '/images/hero-som-module.jpg',
     fallback: '/images/aiegx-hardware-som-hd.jpg',
+    video1080: '/video/aiegx-hero.mp4',
+    video720: '/video/aiegx-hero.mp4',
+    poster: '/video/aiegx-hero-poster.jpg',
   },
   {
     eyebrow: 'INTEGRATED SOLUTIONS',
@@ -54,6 +57,9 @@ const heroSlides = [
     target: '#integrated-solutions',
     image: '/images/integrated-solution-hd.jpg',
     fallback: '/images/vdc-solution-hd.jpg',
+    video1080: '/video/aiegx-hero-slide-solutions-1080p.mp4',
+    video720: '/video/aiegx-hero-slide-solutions-720p.mp4',
+    poster: '/video/aiegx-hero-slide-solutions-poster.jpg',
   },
   {
     eyebrow: 'EDGE AI & COMPUTER VISION',
@@ -63,6 +69,9 @@ const heroSlides = [
     target: '#engineering-capabilities',
     image: '/images/edge_robotics_ai.jpg',
     fallback: '/images/dms-solution-hd.jpg',
+    video1080: '/video/aiegx-hero-slide-edge-1080p.mp4',
+    video720: '/video/aiegx-hero-slide-edge-720p.mp4',
+    poster: '/video/aiegx-hero-slide-edge-poster.jpg',
   },
   {
     eyebrow: 'ENGINEERING CAPABILITIES',
@@ -72,6 +81,9 @@ const heroSlides = [
     target: '#contact',
     image: '/images/industrial-computing-hd.jpg',
     fallback: '/images/sbc-platform-hd.jpg',
+    video1080: '/video/aiegx-hero-slide-engineering-1080p.mp4',
+    video720: '/video/aiegx-hero-slide-engineering-720p.mp4',
+    poster: '/video/aiegx-hero-slide-engineering-poster.jpg',
   },
 ];
 
@@ -124,7 +136,8 @@ const integratedSolutions = [
       'Vehicle Detection Camera',
       'Smart Parking — Planned',
     ],
-    image: '/images/homepage-refresh/solutions/AI Traffic Surveillance with Plate Detection.png',
+    image: '/images/Smart City Traffic Surveillance.png',
+    imagePosition: 'center 38%',
     alt: 'AI traffic surveillance with vehicle and license plate detection',
     icon: Bus,
   },
@@ -140,7 +153,8 @@ const integratedSolutions = [
       'People Counting — Planned',
       'Multi-Camera Video Analytics — Planned',
     ],
-    image: '/images/homepage-refresh/solutions/AI Security Surveillance at Modern Entrance.png',
+    image: '/images/Modern Entrance Under Surveillance.png',
+    imagePosition: 'center 40%',
     alt: 'AI security surveillance at a modern entrance',
     icon: Cctv,
   },
@@ -156,7 +170,8 @@ const integratedSolutions = [
       'Smart Vision AI Camera',
       'Infrastructure Control Systems — Planned',
     ],
-    image: '/images/homepage-refresh/solutions/Automated Gear Inspection Line.png',
+    image: '/images/Industrial Vision Inspection Line.png',
+    imagePosition: 'center 50%',
     alt: 'Automated gear inspection on an industrial production line',
     icon: Factory,
   },
@@ -171,7 +186,8 @@ const integratedSolutions = [
       'Target Tracking & Recognition — Planned',
       'Rugged AI Embedded System — Planned',
     ],
-    image: '/images/homepage-refresh/solutions/Futuristic Mountain Surveillance HUD.png',
+    image: '/images/Mountain Checkpoint Surveillance Operation.png',
+    imagePosition: 'center 40%',
     alt: 'Mountain surveillance scene with a targeting heads-up display',
     icon: Shield,
   },
@@ -259,22 +275,53 @@ const capabilities = [
 ];
 
 export default function Home() {
+  const solutionsFxRootRef = useSolutionsFx(SOLUTIONS_FX);
   const [activeSlide, setActiveSlide] = useState(0);
   const [heroPaused, setHeroPaused] = useState(false);
-  const [heroVideoFailed, setHeroVideoFailed] = useState(false);
-  const [heroVideoReady, setHeroVideoReady] = useState(false);
+  const [transitionFrom, setTransitionFrom] = useState(null);
+  const [videoReady, setVideoReady] = useState({});
+  const [useMobileVideo, setUseMobileVideo] = useState(false);
+  const [flippedSolutionCode, setFlippedSolutionCode] = useState(null);
+  const videoRefs = useRef(new Map());
+  const solutionFrontButtons = useRef(new Map());
+  const solutionBackButtons = useRef(new Map());
+  const activeSlideRef = useRef(0);
+  const fallbackTimer = useRef(null);
+  const transitionTimer = useRef(null);
+  const dotRef = useRef(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => (
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   ));
   const slide = heroSlides[activeSlide];
 
+  const solutionsIntro = (
+    <div className="home-platforms__intro home-solutions__intro">
+      <div className="home-platforms__intro-copy home-solutions__intro-copy">
+        <p className="home-eyebrow"><span aria-hidden="true" />INTEGRATED SOLUTIONS</p>
+        <h2 id="home-solutions-title">Our <span>Integrated Solutions</span></h2>
+        <p className="home-platforms__description home-solutions__intro-description">
+          Application-ready embedded systems combining hardware, software and AI for transportation, video surveillance, industrial automation and defence applications.
+        </p>
+      </div>
+    </div>
+  );
+  const nextSlide = (activeSlide + 1) % heroSlides.length;
+  const visibleVideoSlides = transitionFrom === null
+    ? [activeSlide, nextSlide]
+    : [activeSlide, transitionFrom];
+
   useEffect(() => {
-    if (prefersReducedMotion || heroPaused) return undefined;
-    const timer = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % heroSlides.length);
-    }, 7000);
-    return () => window.clearInterval(timer);
-  }, [heroPaused, prefersReducedMotion]);
+    activeSlideRef.current = activeSlide;
+  }, [activeSlide]);
+
+  useEffect(() => {
+    const updateSource = () => setUseMobileVideo(
+      window.innerWidth < 900 || navigator.connection?.saveData === true,
+    );
+    updateSource();
+    window.addEventListener('resize', updateSource);
+    return () => window.removeEventListener('resize', updateSource);
+  }, []);
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -283,26 +330,96 @@ export default function Home() {
     return () => query.removeEventListener('change', update);
   }, []);
 
-  const moveSlide = (direction) => {
-    setActiveSlide((current) => (current + direction + heroSlides.length) % heroSlides.length);
+  const activateSlide = (index) => {
+    const target = (index + heroSlides.length) % heroSlides.length;
+    if (target === activeSlideRef.current) return;
+    setTransitionFrom(activeSlideRef.current);
+    activeSlideRef.current = target;
+    setActiveSlide(target);
+    setVideoReady((current) => ({ ...current, [target]: false }));
+    window.clearTimeout(transitionTimer.current);
+    transitionTimer.current = window.setTimeout(() => setTransitionFrom(null), 650);
   };
 
-  const handleHeroVideoCanPlay = (event) => {
-    const playback = event.currentTarget.play();
-    if (!playback?.then) {
-      setHeroVideoReady(true);
-      return;
-    }
-    playback.then(() => setHeroVideoReady(true)).catch(() => {
-      setHeroVideoReady(false);
-      setHeroVideoFailed(true);
+  const moveSlide = (direction) => activateSlide(activeSlideRef.current + direction);
+
+  useEffect(() => {
+    const activeVideo = videoRefs.current.get(activeSlide);
+    if (!activeVideo) return undefined;
+
+    videoRefs.current.forEach((video, index) => {
+      if (index !== activeSlide) video.pause();
     });
-  };
+    window.clearTimeout(fallbackTimer.current);
+    if (prefersReducedMotion) {
+      activeVideo.pause();
+      return undefined;
+    }
 
-  const handleHeroVideoError = () => {
-    setHeroVideoReady(false);
-    setHeroVideoFailed(true);
-  };
+    activeVideo.currentTime = 0;
+    const fallbackAdvance = () => {
+      window.clearTimeout(fallbackTimer.current);
+      fallbackTimer.current = window.setTimeout(() => {
+        if (activeSlideRef.current === activeSlide) moveSlide(1);
+      }, 10000);
+    };
+    if (document.hidden || heroPaused) {
+      activeVideo.pause();
+      return undefined;
+    }
+    try {
+      const playback = activeVideo.play();
+      Promise.resolve(playback).catch(() => {
+        setVideoReady((current) => ({ ...current, [activeSlide]: false }));
+        fallbackAdvance();
+      });
+    } catch {
+      fallbackAdvance();
+    }
+    return () => window.clearTimeout(fallbackTimer.current);
+  }, [activeSlide, heroPaused, prefersReducedMotion, useMobileVideo]);
+
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      const video = videoRefs.current.get(activeSlideRef.current);
+      if (!video) return;
+      if (document.hidden) {
+        video.pause();
+        window.clearTimeout(fallbackTimer.current);
+      }
+      else if (!heroPaused && !prefersReducedMotion) {
+        const visibleSlide = activeSlideRef.current;
+        Promise.resolve(video.play()).catch(() => {
+          setVideoReady((current) => ({ ...current, [visibleSlide]: false }));
+          window.clearTimeout(fallbackTimer.current);
+          fallbackTimer.current = window.setTimeout(() => {
+            if (activeSlideRef.current === visibleSlide && !document.hidden && !heroPaused) moveSlide(1);
+          }, 10000);
+        });
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+  }, [heroPaused, prefersReducedMotion]);
+
+  useEffect(() => () => {
+    window.clearTimeout(fallbackTimer.current);
+    window.clearTimeout(transitionTimer.current);
+    videoRefs.current.forEach((video) => video.pause());
+  }, []);
+
+  useEffect(() => {
+    let frame;
+    const updateProgress = () => {
+      const video = videoRefs.current.get(activeSlideRef.current);
+      if (dotRef.current && video && Number.isFinite(video.duration) && video.duration > 0) {
+        dotRef.current.style.setProperty('--slide-progress', `${Math.min(1, video.currentTime / video.duration)}`);
+      }
+      frame = window.requestAnimationFrame(updateProgress);
+    };
+    frame = window.requestAnimationFrame(updateProgress);
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   return (
     <div className="home-redesign">
@@ -313,35 +430,60 @@ export default function Home() {
         aria-roledescription="carousel"
         onMouseEnter={() => setHeroPaused(true)}
         onMouseLeave={() => setHeroPaused(false)}
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowRight') moveSlide(1);
+          else if (event.key === 'ArrowLeft') moveSlide(-1);
+        }}
         onFocusCapture={() => setHeroPaused(true)}
         onBlurCapture={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget)) setHeroPaused(false);
         }}
       >
-        <img
-          className={`home-hero__poster${heroVideoReady && !prefersReducedMotion && !heroVideoFailed ? ' is-covered' : ''}`}
-          src={HERO_VIDEO_POSTER}
-          alt=""
-          aria-hidden="true"
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-        />
-        {!prefersReducedMotion && !heroVideoFailed && (
-          <video
-            className={`home-hero__video${heroVideoReady ? ' is-ready' : ''}`}
-            src={HERO_VIDEO_SRC}
-            autoPlay
-            muted
-            playsInline
-            loop
-            preload="auto"
-            poster={HERO_VIDEO_POSTER}
-            onCanPlay={handleHeroVideoCanPlay}
-            onError={handleHeroVideoError}
-            aria-hidden="true"
-          />
-        )}
+        {visibleVideoSlides.map((index) => {
+          const item = heroSlides[index];
+          const active = index === activeSlide;
+          const videoSrc = useMobileVideo ? item.video720 : item.video1080;
+          return (
+            <div className={`home-hero__video-layer${active ? ' is-active' : ''}`} key={index}>
+              <img className={`home-hero__poster${videoReady[index] && !prefersReducedMotion ? ' is-covered' : ''}`} src={item.poster} alt="" aria-hidden="true" />
+              {!prefersReducedMotion && (
+                <video
+                  ref={(element) => {
+                    if (element) videoRefs.current.set(index, element);
+                    else videoRefs.current.delete(index);
+                  }}
+                  className={`home-hero__video${videoReady[index] ? ' is-ready' : ''}`}
+                  src={videoSrc}
+                  muted
+                  playsInline
+                  preload={active || index === nextSlide ? 'auto' : 'metadata'}
+                  poster={item.poster}
+                  onCanPlay={() => {
+                    if (index === activeSlideRef.current) {
+                      setVideoReady((current) => ({ ...current, [index]: true }));
+                    }
+                  }}
+                  onEnded={() => {
+                    if (index === activeSlideRef.current) {
+                      if (!prefersReducedMotion) moveSlide(1);
+                    }
+                  }}
+                  onError={() => {
+                    if (index !== activeSlideRef.current || prefersReducedMotion) return;
+                    setVideoReady((current) => ({ ...current, [index]: false }));
+                    window.clearTimeout(fallbackTimer.current);
+                    if (!heroPaused && !document.hidden) {
+                      fallbackTimer.current = window.setTimeout(() => {
+                        if (activeSlideRef.current === index) moveSlide(1);
+                      }, 10000);
+                    }
+                  }}
+                  aria-hidden="true"
+                />
+              )}
+            </div>
+          );
+        })}
         <button
           className="home-hero__arrow home-hero__arrow--previous"
           type="button"
@@ -365,9 +507,10 @@ export default function Home() {
                 type="button"
                 key={item.eyebrow}
                 className={index === activeSlide ? 'is-active' : ''}
-                onClick={() => setActiveSlide(index)}
+                onClick={() => activateSlide(index)}
                 aria-label={`Show slide ${index + 1}: ${item.eyebrow.toLowerCase()}`}
                 aria-pressed={index === activeSlide}
+                ref={index === activeSlide ? dotRef : null}
               />
             ))}
           </div>
@@ -453,18 +596,15 @@ export default function Home() {
       </section>
 
       <section className="home-section home-solutions" id="integrated-solutions" aria-labelledby="home-solutions-title">
-        <div className="home-section__inner container">
-          <div className="home-platforms__intro home-solutions__intro">
-            <div className="home-platforms__intro-copy home-solutions__intro-copy">
-              <p className="home-eyebrow"><span aria-hidden="true" />INTEGRATED SOLUTIONS</p>
-              <h2 id="home-solutions-title">Our <span>Integrated Solutions</span></h2>
-              <p className="home-platforms__description home-solutions__intro-description">
-                Application-ready embedded systems combining hardware, software and AI for transportation, video surveillance, industrial automation and defence applications.
-              </p>
-            </div>
-          </div>
+        <div
+          className={`home-section__inner container${SOLUTIONS_FX ? ' fx-combined' : ''}`}
+          ref={SOLUTIONS_FX ? solutionsFxRootRef : null}
+        >
+          {SOLUTIONS_FX ? (
+            <div className="solutions-fx__reveal" style={{ '--solutions-fx-order': 0 }}>{solutionsIntro}</div>
+          ) : solutionsIntro}
           <div className="home-services__grid">
-            {integratedSolutions.map((service) => {
+            {integratedSolutions.map((service, index) => {
               const Icon = service.icon;
               const parsedSolutions = service.solutions.map((item) => {
                 const statusMatch = item.match(/\s+—\s+(Planned|In Development)$/);
@@ -474,51 +614,184 @@ export default function Home() {
                 };
               });
 
-              return (
-                <article className="home-service-card" key={service.code}>
-                  <div className="home-service-card__image">
-                    <img
-                      src={service.image}
-                      alt={service.alt}
-                      loading="lazy"
-                      decoding="async"
-                      onError={(event) => {
-                        if (event.currentTarget.dataset.fallbackApplied !== 'true') {
-                          event.currentTarget.dataset.fallbackApplied = 'true';
-                          event.currentTarget.src = '/images/integrated-solution-hd.jpg';
-                        } else {
-                          event.currentTarget.style.visibility = 'hidden';
-                        }
-                      }}
-                    />
-                  </div>
-                  <div className="home-service-card__content">
-                    <div className="home-service-card__meta">
-                      <span>{service.shortName}</span>
-                      <Icon size={17} aria-hidden="true" />
+              const isFlipped = SOLUTIONS_FX && flippedSolutionCode === service.code;
+              const solutionImage = (
+                <div className="home-service-card__image">
+                  <img
+                    src={service.image}
+                    alt={service.alt}
+                    style={{ objectPosition: service.imagePosition }}
+                    loading="lazy"
+                    decoding="async"
+                    onError={(event) => {
+                      if (event.currentTarget.dataset.fallbackApplied !== 'true') {
+                        event.currentTarget.dataset.fallbackApplied = 'true';
+                        event.currentTarget.src = '/images/integrated-solution-hd.jpg';
+                      } else {
+                        event.currentTarget.style.visibility = 'hidden';
+                      }
+                    }}
+                  />
+                </div>
+              );
+              const category = (
+                <div className="home-service-card__meta">
+                  <span>{service.shortName}</span>
+                  <Icon size={17} aria-hidden="true" />
+                </div>
+              );
+              const title = () => <h3>{service.title}</h3>;
+              const description = <p className="home-service-card__description">{service.copy}</p>;
+              const solutionsHeading = <span className="home-service-card__solutions-label">Solutions</span>;
+              const solutionItems = (
+                <ul>
+                  {parsedSolutions.map(({ name, status }) => {
+                    const SolutionIcon = solutionIcons[name] ?? ArrowRight;
+                    return (
+                      <li key={name}>
+                        <SolutionIcon className="home-service-card__solution-icon" size={17} aria-hidden="true" />
+                        <span className="home-service-card__solution-name">{name}</span>
+                        {status && (
+                          <small className={status === 'In Development' ? 'is-in-development' : 'is-planned'}>
+                            {status}
+                          </small>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              );
+              const solutionsBlock = (
+                <div className="home-service-card__solutions">
+                  {solutionsHeading}
+                  {solutionItems}
+                </div>
+              );
+              const exploreButton = (
+                <a className="home-service-card__button" href="#contact">
+                  Explore Solutions <ArrowUpRight size={16} aria-hidden="true" />
+                </a>
+              );
+              const handlePointerEnter = () => {
+                if (window.matchMedia('(hover: hover) and (pointer: fine)').matches
+                  && document.activeElement !== solutionFrontButtons.current.get(service.code)) {
+                  setFlippedSolutionCode(service.code);
+                }
+              };
+              const handleFrontKeyDown = (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  showSolutions(event);
+                }
+              };
+              const handlePointerLeave = (event) => {
+                if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+                if (event.currentTarget.contains(document.activeElement)) return;
+                setFlippedSolutionCode((current) => (current === service.code ? null : current));
+              };
+              const handleCardClick = (event) => {
+                if (!window.matchMedia('(hover: none), (pointer: coarse)').matches
+                  || !event.target.closest('.home-service-card__front')
+                  || event.target.closest('button, a')) return;
+                setFlippedSolutionCode(service.code);
+              };
+              const showSolutions = (event) => {
+                event.stopPropagation();
+                setFlippedSolutionCode(service.code);
+                if (event.detail === 0 || event.type === 'keydown') {
+                  window.requestAnimationFrame(() => solutionBackButtons.current.get(service.code)?.focus());
+                }
+              };
+              const showFront = (event) => {
+                event.stopPropagation();
+                setFlippedSolutionCode((current) => (current === service.code ? null : current));
+                if (event.detail === 0) {
+                  window.requestAnimationFrame(() => solutionFrontButtons.current.get(service.code)?.focus());
+                }
+              };
+              const card = (
+                <article
+                  className={`home-service-card${isFlipped ? ' is-flipped' : ''}`}
+                  aria-label={service.title}
+                  key={service.code}
+                  onPointerEnter={SOLUTIONS_FX ? handlePointerEnter : undefined}
+                  onPointerLeave={SOLUTIONS_FX ? handlePointerLeave : undefined}
+                  onClick={SOLUTIONS_FX ? handleCardClick : undefined}
+                >
+                  {SOLUTIONS_FX ? (
+                    <div className="solutions-fx__flip-inner">
+                      <div
+                        className="solutions-fx__face solutions-fx__front home-service-card__front"
+                        aria-hidden={isFlipped}
+                        inert={isFlipped}
+                        role="button"
+                        tabIndex={isFlipped ? -1 : 0}
+                        aria-label={`Show solutions for ${service.title}`}
+                        aria-expanded={isFlipped}
+                        onClick={showSolutions}
+                        onKeyDown={handleFrontKeyDown}
+                        ref={(node) => {
+                          if (node) solutionFrontButtons.current.set(service.code, node);
+                          else solutionFrontButtons.current.delete(service.code);
+                        }}
+                      >
+                        {solutionImage}
+                        <div className="home-service-card__content home-service-card__front-content">
+                          {title()}
+                        </div>
+                      </div>
+                      <div
+                        className="solutions-fx__face solutions-fx__back"
+                        aria-hidden={!isFlipped}
+                        inert={!isFlipped}
+                      >
+                        <div className="home-service-card__content home-service-card__back-content">
+                          <div className="home-service-card__back-heading">
+                            {title()}
+                            <button
+                              className="home-service-card__back-button"
+                              type="button"
+                              onClick={showFront}
+                              ref={(node) => {
+                                if (node) solutionBackButtons.current.set(service.code, node);
+                                else solutionBackButtons.current.delete(service.code);
+                              }}
+                            >
+                              <ArrowRight size={14} aria-hidden="true" /> Back
+                            </button>
+                          </div>
+                          {description}
+                          <div className="home-service-card__solutions">
+                            {solutionsHeading}
+                            {solutionItems}
+                          </div>
+                          {exploreButton}
+                        </div>
+                      </div>
                     </div>
-                    <h3 title={service.title}>{service.title}</h3>
-                    <p className="home-service-card__description">{service.copy}</p>
-                    <div className="home-service-card__solutions">
-                      <span className="home-service-card__solutions-label">Solutions</span>
-                      <ul>
-                        {parsedSolutions.map(({ name, status }) => {
-                          const SolutionIcon = solutionIcons[name] ?? ArrowRight;
-                          return (
-                            <li key={name}>
-                              <SolutionIcon className="home-service-card__solution-icon" size={17} aria-hidden="true" />
-                              <span className="home-service-card__solution-name">{name}</span>
-                              {status && <small>{status}</small>}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                    <a className="home-service-card__button" href="#contact">
-                      Explore Solutions <ArrowUpRight size={16} aria-hidden="true" />
-                    </a>
-                  </div>
+                  ) : (
+                    <>
+                      {solutionImage}
+                      <div className="home-service-card__content">
+                        {category}
+                        {title()}
+                        {description}
+                        {solutionsBlock}
+                        {exploreButton}
+                      </div>
+                    </>
+                  )}
                 </article>
+              );
+              if (!SOLUTIONS_FX) return card;
+              return (
+                <div
+                  className="solutions-fx__reveal solutions-fx__card-reveal"
+                  key={service.code}
+                  style={{ '--solutions-fx-order': index + 1 }}
+                >
+                  {card}
+                </div>
               );
             })}
           </div>

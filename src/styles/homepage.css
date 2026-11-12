@@ -49,6 +49,17 @@
   pointer-events: none;
 }
 
+.home-hero__video-layer {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 600ms ease;
+  pointer-events: none;
+}
+
+.home-hero__video-layer.is-active { opacity: 1; }
+
 .home-hero__video.is-ready { opacity: 1; }
 
 .home-hero__poster {
@@ -234,6 +245,17 @@ html.light .home-section__heading .home-eyebrow {
   border-radius: 999px;
   background: var(--accent-color);
   opacity: 1;
+}
+
+.home-hero__dots button.is-active::after {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, .72);
+  content: "";
+  transform: scaleX(var(--slide-progress, 0));
+  transform-origin: left;
 }
 
 .home-section__heading {
@@ -634,14 +656,21 @@ html.light .home-section__heading .home-eyebrow {
 }
 
 .home-solutions__intro h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: 'Syne', 'Trebuchet MS', sans-serif;
   font-size: clamp(2.125rem, 2.8vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -.05em;
   line-height: 1;
 }
 
 .home-solutions__intro-description {
   max-width: none;
   margin-top: 8px;
+  color: var(--text-secondary);
   font-size: 14px;
+  font-weight: 400;
   line-height: 1.5;
 }
 
@@ -665,7 +694,7 @@ html.light .home-section__heading .home-eyebrow {
   color: var(--text-primary);
   background: var(--surface-bg);
   box-shadow: 0 8px 22px color-mix(in srgb, var(--text-primary) 4%, transparent);
-  transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .home-service-card:first-child {
@@ -673,22 +702,14 @@ html.light .home-section__heading .home-eyebrow {
 }
 
 .home-service-card:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--accent-color) 55%, var(--border-color));
-  background: color-mix(in srgb, var(--accent-color) 4%, var(--surface-bg));
-  box-shadow: 0 14px 30px color-mix(in srgb, var(--text-primary) 9%, transparent);
-}
-
-.home-service-card:focus-within {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 3px;
+  transform: translateY(-1px);
 }
 
 .home-service-card__image {
   position: relative;
   display: grid;
   width: 100%;
-  aspect-ratio: 2 / 1;
+  aspect-ratio: 3 / 2;
   flex: 0 0 auto;
   place-items: center;
   overflow: hidden;
@@ -698,15 +719,12 @@ html.light .home-section__heading .home-eyebrow {
 
 .home-service-card__image img {
   display: block;
-  width: 100%;
-  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
   object-position: center;
-  transition: transform 420ms cubic-bezier(.2, .7, .2, 1);
-}
-
-.home-service-card:hover .home-service-card__image img {
-  transform: scale(1.025);
 }
 
 .home-service-card__content {
@@ -725,8 +743,8 @@ html.light .home-section__heading .home-eyebrow {
   gap: 8px;
   margin-bottom: 3px;
   color: var(--accent-color);
-  font: 650 9px/1.3 "JetBrains Mono", Consolas, monospace;
-  letter-spacing: .075em;
+  font: 700 11px/1.4 'Manrope', 'Segoe UI', sans-serif;
+  letter-spacing: .08em;
   text-transform: uppercase;
 }
 
@@ -735,25 +753,32 @@ html.light .home-section__heading .home-eyebrow {
 }
 
 .home-service-card__content h3 {
+  display: -webkit-box;
+  min-height: 2.5em;
+  overflow: hidden;
   margin: 0;
   color: var(--text-primary);
-  font-size: clamp(20px, 1.55vw, 24px);
-  font-weight: 780;
-  letter-spacing: -.04em;
-  line-height: 1.08;
-  overflow-wrap: anywhere;
+  font-family: 'Syne', 'Trebuchet MS', sans-serif;
+  font-size: clamp(20px, 1.55vw, 22px);
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.25;
+  overflow-wrap: break-word;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .home-service-card__content > p {
   margin: 4px 0 6px;
   color: var(--text-secondary);
   font-size: 14px;
-  line-height: 1.4;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 .home-service-card__content > .home-service-card__description {
   max-width: 34ch;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .home-service-card__solutions {
@@ -764,8 +789,9 @@ html.light .home-section__heading .home-eyebrow {
   display: block;
   margin-bottom: 3px;
   color: var(--text-primary);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
+  line-height: 1.4;
 }
 
 .home-service-card__solutions ul {
@@ -781,31 +807,33 @@ html.light .home-section__heading .home-eyebrow {
   display: grid;
   grid-template-columns: 17px minmax(0, 1fr) auto;
   min-width: 0;
-  align-items: flex-start;
+  align-items: center;
   column-gap: 6px;
   row-gap: 2px;
   color: var(--text-secondary);
   font-size: 13px;
-  line-height: 1.3;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .home-service-card__solution-icon {
   flex: 0 0 17px;
-  margin-top: 1px;
+  margin-top: 0;
   color: var(--accent-color);
   stroke-width: 1.8;
 }
 
 .home-service-card__solution-name {
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .home-service-card__solutions li small {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  justify-self: start;
+  justify-self: end;
+  align-self: center;
   max-width: 100%;
   padding: 2px 5px;
   border: 1px solid var(--border-color);
@@ -813,9 +841,20 @@ html.light .home-section__heading .home-eyebrow {
   color: var(--text-secondary);
   line-height: 1.2;
   background: var(--surface-secondary);
-  font-size: 10px;
-  font-weight: 650;
+  font-size: 11px;
+  font-weight: 600;
   white-space: nowrap;
+}
+
+.home-service-card__solutions li small.is-in-development {
+  border-color: color-mix(in srgb, var(--accent-color) 35%, var(--border-color));
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 10%, var(--surface-bg));
+}
+
+.home-service-card__solutions li small.is-planned {
+  color: var(--text-secondary);
+  background: var(--surface-secondary);
 }
 
 .home-service-card__button {
@@ -831,8 +870,7 @@ html.light .home-section__heading .home-eyebrow {
   border-radius: 9px;
   color: var(--accent-contrast) !important;
   background: var(--accent-color);
-  font-size: 12px;
-  font-weight: 750;
+  font: 600 14px 'Manrope', 'Segoe UI', sans-serif;
   text-decoration: none;
   transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
@@ -1389,13 +1427,8 @@ html.light .home-capability p {
   }
 
   .home-services__grid {
-    grid-template-columns: 1fr;
-    grid-auto-rows: auto;
-  }
-
-  .home-service-card {
-    height: auto;
-    min-height: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
   }
 
   .home-platforms__benefits {
@@ -1483,7 +1516,7 @@ html.light .home-capability p {
 
   .home-services__grid {
     grid-template-columns: 1fr;
-    grid-auto-rows: auto;
+    grid-auto-rows: minmax(0, 1fr);
   }
 }
 
