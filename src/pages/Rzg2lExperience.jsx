@@ -11,7 +11,6 @@ import {
   HardDrive,
   Monitor,
 } from 'lucide-react';
-import PlatformImage from '../components/products/PlatformImage';
 import {
   hardwareApplications,
   hardwarePlatforms,
@@ -29,21 +28,21 @@ const architectureItems = [
     id: 'smarc-som',
     title: 'SMARC SoM',
     description: 'Processor, Memory, Core Interfaces',
-    image: rzg2lProductContent['smarc-som'].image,
+    image: '/images/rz-g2l-smarc-som.png',
     alt: rzg2lProductContent['smarc-som'].imageAlt,
   },
   {
     id: 'carrier-board',
     title: 'Carrier Board',
     description: 'Application Interfaces and Expansion',
-    image: rzg2lProductContent['carrier-board'].image,
+    image: '/images/rz-g2l-carrier-board.png',
     alt: rzg2lProductContent['carrier-board'].imageAlt,
   },
   {
     id: 'complete-sbc',
     title: 'Complete SBC / Development Platform',
     description: 'SMARC SoM + Carrier Board',
-    image: rzg2lProductContent['complete-sbc'].image,
+    image: '/images/rz-g2l-complete-sbc.png',
     alt: rzg2lProductContent['complete-sbc'].imageAlt,
   },
 ];
@@ -69,27 +68,56 @@ const rzg2lFeatureStrip = [
 const hardwareOptions = [
   {
     id: 'smarc-som',
+    image: '/images/rz-g2l-smarc-som.png',
+    imageAlt: 'RZ/G2L SMARC SoM board',
+    imagePhase: 0,
     description: 'Compact SMARC module with essential interfaces for industrial and HMI applications.',
     features: ['Renesas RZ/G2L Processor', 'Optimized for HMI & Display', 'Compact form factor (SMARC)', 'Yocto Linux BSP'],
   },
   {
     id: 'carrier-board',
+    image: '/images/rz-g2l-carrier-board.png',
+    imageAlt: 'RZ/G2L carrier board',
+    imagePhase: 1,
     description: 'Expansion board with additional interfaces and connectivity.',
     features: ['Supports RZ/G2L SMARC SoM', 'Rich I/O and expansion', 'Industrial connectors', 'Flexible for custom designs'],
   },
   {
     id: 'complete-sbc',
+    image: '/images/rz-g2l-complete-sbc.png',
+    imageAlt: 'RZ/G2L complete SBC development platform',
+    imagePhase: 2,
     description: 'Complete ready-to-use single board computer (SMARC SoM + Carrier Board).',
     features: ['All required interfaces', 'Ideal for prototyping', 'Validated configuration', 'Yocto Linux BSP'],
   },
 ];
 
 const typicalApplications = [
-  { title: 'Industrial HMI', image: '/images/hmi-solution-hd.jpg' },
-  { title: 'Railway HMI', image: '/images/industry-railways.jpg' },
-  { title: 'Display Controller', image: '/images/integrated-solution-hd.jpg' },
-  { title: 'Remote Monitoring', image: '/images/industry-smart-city.jpg' },
-  { title: 'Connected Systems', image: '/images/industrial-computing-hd.jpg' },
+  {
+    title: 'Industrial HMI',
+    image: '/images/hmi-solution-hd.jpg',
+    description: 'Support responsive operator interfaces for industrial monitoring and control.',
+  },
+  {
+    title: 'Railway HMI',
+    image: '/images/industry-railways.jpg',
+    description: 'Enable onboard or trackside displays for railway information and system status.',
+  },
+  {
+    title: 'Display Controller',
+    image: '/images/integrated-solution-hd.jpg',
+    description: 'Drive embedded display experiences for information, monitoring and control.',
+  },
+  {
+    title: 'Remote Monitoring',
+    image: '/images/industry-smart-city.jpg',
+    description: 'Connect edge systems for remote visualization and operational monitoring.',
+  },
+  {
+    title: 'Connected Systems',
+    image: '/images/industrial-computing-hd.jpg',
+    description: 'Bring embedded processing and connectivity to networked industrial equipment.',
+  },
 ];
 
 const whyRzg2l = [
@@ -119,9 +147,9 @@ function Breadcrumbs({ product }) {
   );
 }
 
-function Rzg2lShell({ children, product }) {
+function Rzg2lShell({ children, product, platformPage = false }) {
   return (
-    <div className="hardware-detail rzg2l-experience">
+    <div className={`hardware-detail rzg2l-experience${platformPage ? ' rzg2l-experience--platform' : ''}`}>
       <div className="hardware-detail__inner">
         <Breadcrumbs product={product} />
         {children}
@@ -132,18 +160,47 @@ function Rzg2lShell({ children, product }) {
 
 function PlatformPage() {
   return (
-    <Rzg2lShell>
+    <Rzg2lShell platformPage>
       <section className="hardware-detail__hero rzg2l-platform-hero">
-        <div className="hardware-detail__copy">
+        <svg className="rzg2l-platform-hero__circuits" viewBox="0 0 1400 520" preserveAspectRatio="none" aria-hidden="true">
+          <g fill="none" stroke="var(--accent-color)" strokeWidth="1.5">
+            <path d="M600 90h120v-34h140v54h100v-44h190" />
+            <path d="M560 150h164v40h112v-58h142v-38h172" />
+            <path d="M585 228h110v-36h150v54h126v-42h180" />
+            <path d="M640 314h130v-42h116v54h155v-38h126" />
+            <path d="M720 390h118v-34h154v46h112v-40h94" />
+            <path d="M900 66v76h-38v90h56v86h-32v72" />
+            <path d="M1110 80v80h-42v84h74v92h-36v92" />
+          </g>
+          <g fill="var(--accent-color)">
+            <circle cx="600" cy="90" r="3" />
+            <circle cx="1150" cy="66" r="3" />
+            <circle cx="560" cy="150" r="3" />
+            <circle cx="1270" cy="94" r="3" />
+            <circle cx="585" cy="228" r="3" />
+            <circle cx="1157" cy="244" r="3" />
+            <circle cx="640" cy="314" r="3" />
+            <circle cx="1165" cy="326" r="3" />
+            <circle cx="720" cy="390" r="3" />
+            <circle cx="1198" cy="446" r="3" />
+          </g>
+        </svg>
+        <div className="hardware-detail__copy rzg2l-platform-hero__copy">
           <p className="hardware-detail__eyebrow"><Cpu size={15} aria-hidden="true" /> EMBEDDED PLATFORM</p>
           <h1><span>RZ/G2L</span><br />Embedded Control &amp; HMI Platform</h1>
+          <span className="rzg2l-platform-hero__accent" aria-hidden="true" />
           <p className="hardware-detail__description">Renesas RZ/G2L based platform for industrial HMI, display control, connectivity and embedded applications. Designed for long product lifecycle and reliable industrial use.</p>
           <div className="hardware-detail__actions">
             <a className="hardware-detail__button" href="/#contact">Contact / Enquiry <ArrowUpRight size={16} aria-hidden="true" /></a>
           </div>
         </div>
-        <div className="hardware-detail__image">
-          <PlatformImage productId="rz-g2l" className="hardware-detail__image-element" />
+        <div className="hardware-detail__image rzg2l-platform-hero__visual">
+          <img
+            className="rzg2l-platform-hero__board"
+            src="/images/rz-g2l-complete-sbc.png"
+            alt="RZ/G2L complete SBC development platform board"
+            decoding="async"
+          />
         </div>
       </section>
 
@@ -192,7 +249,17 @@ function PlatformPage() {
             const detail = rzg2lProductContent[product.id];
             return (
               <a className="rzg2l-product-card" href={product.route} key={product.id}>
-                <div className="rzg2l-product-card__image"><img src={detail.image} alt={detail.imageAlt} loading="lazy" decoding="async" /></div>
+                <div className="rzg2l-product-card__image">
+                  <div className="rzg2l-product-card__image-motion">
+                    <img
+                      src={option.image}
+                      alt={option.imageAlt}
+                      loading="lazy"
+                      decoding="async"
+                      style={{ animationDelay: `${option.imagePhase * -1.8}s` }}
+                    />
+                  </div>
+                </div>
                 <div className="rzg2l-product-card__body">
                   <h3>{detail.title}</h3>
                   <p>{option.description}</p>
@@ -211,9 +278,13 @@ function PlatformPage() {
         <section className="hardware-detail__section rzg2l-applications">
           <h2>Typical Applications</h2>
           <div className="rzg2l-applications__grid">
-            {typicalApplications.map(({ title, image }) => <article key={title}>
+            {typicalApplications.map(({ title, image, description }) => <article key={title} tabIndex={0}>
               <img src={image} alt="" loading="lazy" decoding="async" />
-              <h3>{title}</h3>
+              <div className="rzg2l-applications__caption">
+                <span aria-hidden="true" />
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
             </article>)}
           </div>
         </section>
